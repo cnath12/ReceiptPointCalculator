@@ -4,6 +4,9 @@ import (
     "regexp"
     "time"
     "github.com/go-playground/validator/v10"
+	"math"
+	"ReceiptPointCalculator/internal/domain/model"
+	"strconv"
 )
 
 type ReceiptValidator struct {
@@ -19,7 +22,8 @@ func NewReceiptValidator() *ReceiptValidator {
     v.RegisterValidation("date", validateDate)
     v.RegisterValidation("time", validateTime)
     v.RegisterValidation("price", validatePrice)
-    
+    v.RegisterValidation("totalMatch", validateTotal)
+
     return &ReceiptValidator{validate: v}
 }
 
@@ -55,4 +59,31 @@ func validateShortDescription(fl validator.FieldLevel) bool {
     desc := fl.Field().String()
     matched, _ := regexp.MatchString(`^[\w\s\-]+$`, desc)
     return matched
+}
+
+func validateTotal(fl validator.FieldLevel) bool {
+    receipt, ok := fl.Parent().Interface().(model.Receipt)
+    if !ok {
+        return false
+    }
+
+    total, err := strconv.ParseFloat(receipt.Total, 64)
+    if err != nil {
+        return false
+    }
+
+    var sum float64
+    for _, item := range receipt.Items {
+        price, err := strconv.ParseFloat(item.Price, 64)
+        if err != nil {
+            return false
+        }
+        sum += price
+    }
+
+    // Round to 2 decimal places to avoid floating point precision issues
+    sum = math.Round(sum*100) / 100
+    total = math.Round(total*100) / 100
+
+    return sum == total
 }

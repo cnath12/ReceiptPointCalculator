@@ -52,6 +52,19 @@ func TestReceiptValidator(t *testing.T) {
             },
             wantError: true,
         },
+		{
+			name: "Invalid Total - Doesn't Match Item Prices",
+			receipt: model.Receipt{
+				Retailer:     "Target",
+				PurchaseDate: "2022-01-01",
+				PurchaseTime: "13:01",
+				Items: []model.Item{
+					{ShortDescription: "Test Item", Price: "5046422.00"},
+				},
+				Total: "80.57",
+			},
+			wantError: true,
+		},
         {
             name: "Valid Short Description with Spaces and Hyphens",
             receipt: model.Receipt{
