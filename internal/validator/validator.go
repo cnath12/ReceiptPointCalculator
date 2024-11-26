@@ -15,6 +15,7 @@ func NewReceiptValidator() *ReceiptValidator {
     
     // Register custom validation functions
     v.RegisterValidation("retailer", validateRetailer)
+	v.RegisterValidation("shortDescription", validateShortDescription)
     v.RegisterValidation("date", validateDate)
     v.RegisterValidation("time", validateTime)
     v.RegisterValidation("price", validatePrice)
@@ -48,4 +49,10 @@ func validatePrice(fl validator.FieldLevel) bool {
 
 func (v *ReceiptValidator) ValidateReceipt(receipt interface{}) error {
     return v.validate.Struct(receipt)
+}
+
+func validateShortDescription(fl validator.FieldLevel) bool {
+    desc := fl.Field().String()
+    matched, _ := regexp.MatchString(`^[\w\s\-]+$`, desc)
+    return matched
 }

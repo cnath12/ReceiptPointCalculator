@@ -134,6 +134,19 @@ func TestInvalidRequests(t *testing.T) {
             },
             wantStatus: http.StatusBadRequest,
         },
+		{
+			name: "Invalid Short Description Format",
+			receipt: model.Receipt{
+				Retailer:     "Target",
+				PurchaseDate: "2022-01-01",
+				PurchaseTime: "13:01",
+				Items: []model.Item{
+					{ShortDescription: "Mountain Dew @#$", Price: "12.34"},
+				},
+				Total: "12.34",
+			},
+			wantStatus: http.StatusBadRequest,
+		},
         {
             name: "Invalid Time Format",
             receipt: model.Receipt{

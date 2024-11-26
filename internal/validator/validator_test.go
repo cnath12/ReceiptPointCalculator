@@ -26,6 +26,45 @@ func TestReceiptValidator(t *testing.T) {
             },
             wantError: false,
         },
+		{
+            name: "Valid Short Description",
+            receipt: model.Receipt{
+                Retailer:     "Target",
+                PurchaseDate: "2022-01-01",
+                PurchaseTime: "13:01",
+                Items: []model.Item{
+                    {ShortDescription: "Mountain Dew 12PK", Price: "12.34"},
+                },
+                Total: "12.34",
+            },
+            wantError: false,
+        },
+		{
+            name: "Invalid Short Description - Special Characters",
+            receipt: model.Receipt{
+                Retailer:     "Target",
+                PurchaseDate: "2022-01-01",
+                PurchaseTime: "13:01",
+                Items: []model.Item{
+                    {ShortDescription: "Mountain Dew @#$", Price: "12.34"},
+                },
+                Total: "12.34",
+            },
+            wantError: true,
+        },
+        {
+            name: "Valid Short Description with Spaces and Hyphens",
+            receipt: model.Receipt{
+                Retailer:     "Target",
+                PurchaseDate: "2022-01-01",
+                PurchaseTime: "13:01",
+                Items: []model.Item{
+                    {ShortDescription: "Klarbrunn 12-PK 12 FL OZ", Price: "12.34"},
+                },
+                Total: "12.34",
+            },
+            wantError: false,
+        },
         {
             name: "Invalid Retailer",
             receipt: model.Receipt{
