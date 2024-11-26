@@ -37,8 +37,20 @@ go test ./... -v
 
 Test specific packages:
 ```bash
+# Test service package
 go test ./internal/domain/service -v
+
+# Test handler package
 go test ./internal/api/handler -v
+
+# Test validator package
 go test ./internal/validator -v
+
+# Test memory storage
 go test ./internal/storage/memory -v
+```
+
+Run integration tests:
+```bash
+go test ./internal/tests -v
 ```
